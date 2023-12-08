@@ -34,7 +34,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        dockerfile: ./Lab 4/Dockerfile
+        file: Lab 4/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/lab4image:${{ github.sha }}
 
