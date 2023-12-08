@@ -61,3 +61,5 @@ jobs:
             sudo systemctl enable apache2
             cd home
             sudo mv * /var/www/html
+            docker pull httpd:latest
+            docker run -d -p 80:80 httpd
