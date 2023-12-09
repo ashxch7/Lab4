@@ -40,7 +40,7 @@ jobs:
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/lab4image:${{ github.sha }}
 
  deploy:
-    name: Deploy
+    name: Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
@@ -54,11 +54,15 @@ jobs:
           REMOTE_HOST: ${{ secrets.HOST_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
+
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo yum -y update
-            sudo yum install -y httpd
-            sudo systemctl start httpd
-            sudo systemctl enable httpd
-            cd home
-            sudo mv * /var/www/html
-            
+            docker pull ashxch7/lab4image:latest
+            docker stop lab4image && docker rm lab4image
+            docker run -d -p 3000:3000 --name lab4image ashxch7/lab4image:latest
+            docker image prune -f
